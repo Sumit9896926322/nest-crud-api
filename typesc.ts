@@ -63,3 +63,17 @@ function validBook(bookName:book):book{
 
 
 p(validBook(book1));
+
+
+function block(constructor:Function){
+  console.log(c);
+}
+
+@block
+class Student{
+    public studentname:string = "";
+
+    Student(){
+        this.studentname = "sumit";
+    }
+}
