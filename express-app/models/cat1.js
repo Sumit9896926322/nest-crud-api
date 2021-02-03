@@ -1,6 +1,6 @@
 module.exports = class Cat {
-    static catsList = [];
-    static catNum = 0;
+    static catsList = [{ "id": 1, "name": "razor", "age": "20", "breed": "labra" }, { "id": 2, "name": "lucy", "age": "12", "breed": "doberman" }, { "id": 3, "name": "jack", "age": "20", "breed": "labra" }];
+    static catNum = 3;
     id = 0
     name = '';
     age = 0;

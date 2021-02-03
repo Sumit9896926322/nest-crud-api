@@ -14,39 +14,62 @@ app.get('/', (req, res) => {
 });
 
 app.get('/:id', (req, res) => {
-    Cat.catsList.filter(cat => {
-        console.log(cat.id, req.param);
-        if (cat.id == req.param.id) {
+
+    if (isNaN(req.params.id))
+        return res.send('id should be number only');
+    let present = false;
+    Cat.catsList.map(cat => {
+        if (cat.id == req.params.id) {
+            if (!present) present = true;
             res.send(cat);
             return;
         }
     });
-    res.send(Cat.catsList);
+    if (!present) res.send(`No Cat found with given id ${req.params.id}`);
 });
 app.post('/add', (req, res) => {
     const data = req.body;
     const id = ++Cat.catNum;
     Cat.catsList.push(new Cat(id, data.name, data.age, data.breed));
-    res.send('New Cat Added ');
+    res.send(Cat.catsList);
 });
 
-app.delete('/delete/:id', (req, res) => {
-    Cat.catsList.filter((cat) => cat.id != req.param.id);
-    res.send('deleted');
+app.delete('/delete', (req, res) => {
+
+    if (isNaN(req.query.id))
+        return res.send('id should be number only');
+
+    let present = false;
+    Cat.catsList = Cat.catsList.filter((cat) => {
+        if (cat.id == req.query.id && !present)
+            present = true;
+        return cat.id != req.query.id
+
+    });
+    present == true ? res.send(Cat.catsList) : res.send(`No Cat with given id ${req.query.id}`);
 })
 
-app.patch('/update/:id', (req, res) => {
+app.put('/update/:id', (req, res) => {
+
+    if (isNaN(req.params.id))
+        return res.send('id should be number only');
+
+
+    let present = false;
     Cat.catsList.map((cat, index) => {
-        if (cat.id == req.param.id) {
+        if (cat.id == req.params.id) {
+
+            if (!present) present = true;
+
             const data = req.body;
             console.log(Cat.catsList);
-            Cat.catsList[i] = new Cat(index, data.name, data.age, data.breed);
+            Cat.catsList[index] = new Cat(req.params.id, data.name, data.age, data.breed);
         }
     });
-    res.send(Cat.catsList);
+    res.send(present == false ? `No Cat with given id ${req.params.id}` : Cat.catsList);
 })
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log("App running on port 3000");
 });
 
