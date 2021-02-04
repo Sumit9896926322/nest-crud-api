@@ -12,3 +12,4 @@ module.exports = {
     deleteCats
 }
 
+//LETS CHECK how git --diff will work
