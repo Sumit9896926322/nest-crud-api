@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import catModel from './cat.model';
+import catDto from './dto/cat.dto';
 
 
 @Injectable()
@@ -20,7 +21,7 @@ export  class CatService {
         return catres;
    }
 
-   addCat(cat:catModel):Array<catModel>{
+   addCat(cat:catDto):Array<catModel>{
         const cat1:catModel = {
             id:++this.catNum,
             name:cat.name,

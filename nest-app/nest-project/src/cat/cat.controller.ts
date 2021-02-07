@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Patch, Post, Put, Req } from '@nestjs/co
 import  {CatService}  from './cat.service';
 import catModel from './cat.model';
 import Request from 'express';
+import catdto from './dto/cat.dto';
 
 @Controller('')
 export class CatController {
@@ -18,8 +19,8 @@ export class CatController {
     }
 
     @Post('add')
-    addCat(@Req() req){
-        return this.catService.addCat(req.body);
+    addCat(@Body() body:catdto){
+        return this.catService.addCat(body);
     }
 
     @Delete('/:id')
