@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Http2ServerRequest } from 'http2';
 import catModel from './cat.model';
 import catDto from './dto/cat.dto';
 
@@ -13,12 +14,10 @@ export  class CatService {
    }
 
    getCat(id:number):catModel{
-       let catres:catModel;
-        this.catList.forEach( cat=>{
-            if(cat.id == id)
-                catres =  cat;
-        });
-        return catres;
+        let res = this.catList.find(cat=> cat.id == id);
+        if(!res)
+            throw new HttpException(`cat with id ${id} not found`, HttpStatus.NOT_FOUND);
+        return res;
    }
 
    addCat(cat:catDto):Array<catModel>{
@@ -34,7 +33,8 @@ export  class CatService {
 
 
    deleteCat(id:number):Array<catModel>{
-       console.log(id);
+    if(!this.getCat(id))
+        throw new HttpException(`cat with id ${id} not found`, HttpStatus.NOT_FOUND);
     this.catList = this.catList.filter((cat) => {
             return cat.id != id;
 
