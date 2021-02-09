@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { CatController } from './cat/cat.controller';
 import { CatModule } from './cat/cat.module';
 import { CatService } from './cat/cat.service';
+import catEntity from './cat/cat.entity';
 
 @Module({
   imports: [CatModule,
@@ -15,10 +16,12 @@ import { CatService } from './cat/cat.service';
       "username":"root",
       "password": "bitcs",
       "database": "cats",
-      "entities": [],
+      "entities": [
+        catEntity
+      ],
       "synchronize": true
     })],
-  // controllers: [CatController],
+  controllers: [CatController],
   // providers: [AppService,CatService],
 })
 export class AppModule {}

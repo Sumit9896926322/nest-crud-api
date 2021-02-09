@@ -6,6 +6,7 @@ export default class catValidationPipes implements PipeTransform{
      transform(data:any,metadata:ArgumentMetadata){
          if(isNaN(data))
             throw new HttpException('id should be integer only',HttpStatus.BAD_REQUEST);
+         return data;
      }
    // custom pipe  
    // transform(cat:catDto){

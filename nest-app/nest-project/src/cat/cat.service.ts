@@ -1,75 +1,52 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
-import Cat from './cat.entity';
 import catModel from './cat.model';
-import catDto from './dto/cat.dto';
 import CatRepository from './cat.repository';
+import catDto from './dto/cat.dto';
+import catEntity from './cat.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 
 @Injectable()
 export  class CatService {
+    
+    constructor(
+        @InjectRepository(CatRepository)
+        private catRepository:CatRepository
+        ){}
+ 
+    private catList = [];
+    private catNum = this.catList.length;
 
-   constructor(
-       @InjectRepository(CatRepository)
-       private catRepository:CatRepository
-   ){}
-
-   private catList:Array<catModel> = [{id:1,name:'jack',age:12,breed:'labra'},{id:2,name:'doby',age:12,breed:'german shepherd'}];
-   private catNum = this.catList.length;
-
-   getCats():catModel[]{
-       return this.catList;
+   async getCats():Promise<catEntity[]>{
+    const res = await this.catRepository.getCatsFromDb();
+    return res;
    }
 
-   getCat(id:number):catModel{
-        let res = this.catList.find(cat=> cat.id == id);
-        if(!res)
-            throw new HttpException(`cat with id ${id} not found`, HttpStatus.NOT_FOUND);
+   async getCat(id:number):Promise<catEntity>{
+       const res = await this.catRepository.getCatFromDb(id);
         return res;
    }
 
-   addCat(cat:catDto):Array<catModel>{
-        const cat1:catModel = {
-            id:++this.catNum,
-            name:cat.name,
-            age:cat.age,
-            breed:cat.breed,
-        }
-        this.catList.push(cat1);
-       return  this.catList;
+   async addCat(cat:catDto):Promise<catEntity>{
+       const res = await this.catRepository.addToDb(cat);
+       return res;
    }
 
 
-   deleteCat(id:number):Array<catModel>{
-    if(!this.getCat(id))
-        throw new HttpException(`cat with id ${id} not found`, HttpStatus.NOT_FOUND);
-    this.catList = this.catList.filter((cat) => {
-            return cat.id != id;
+   async deleteCat(id:number):Promise<catEntity[]>{
+       console.log(id);
+         const res = await this.getCat(id);
+         await this.catRepository.remove(res);
+         const result =await this.getCats();
+         return result;
+    };
 
-    });
 
-  
 
-   return  this.catList;
-}
-
-updateCat(id:number,cat1:catModel):Array<catModel>{
-    this.catList.forEach((cat,index) => {
-        if(cat.id == id){
-            const newCat:catModel = {
-                id:cat1.id,
-                name:cat1.name,
-                age:cat1.age,
-                breed:cat1.breed,
-            }
-            this.catList[index] = newCat;
-            return this.catList;
-            
-        }
-
-    });
-    return this.catList;
+async updateCat(id:number,cat1:catDto):Promise<catEntity[]>{
+    const cats = await this.catRepository.updateCatInDb(id,cat1);
+    return cats;
 }
 
    

@@ -1,5 +1,5 @@
-export default interface cat{
-    id:number
+export default class catModel{
+    id:number;
     name:string;
     age:number;
     breed:string;

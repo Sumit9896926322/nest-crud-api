@@ -6,8 +6,8 @@ import {CatService} from './cat/cat.service';
 export class AppService {
   constructor(private catService:CatService,private appService:AppService){}
 
-  getHello():cat {
+  getHello():string {
     console.log(this.appService);
-    return this.catService.getCat(1);
+    return 'helo';
   }
 }

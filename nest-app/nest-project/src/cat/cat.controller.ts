@@ -5,25 +5,27 @@ import Request from 'express';
 import catdto from './dto/cat.dto';
 import catValidationPipes from './pipes/cat.validation.pipes';
 import { CatGuard } from './guards/cat.guard';
+import catEntity from './cat.entity';
+import catDto from './dto/cat.dto';
 
 
 @Controller('')
-@UseGuards(CatGuard)
+// @UseGuards(CatGuard)
 export class CatController {
     constructor(private catService:CatService){};
 
     @Get()
-    @SetMetadata('user',['admin'])//Not a good approach,use a custome decorator
+    // @SetMetadata('user',['admin']) Not a good approach,use a custome decorator
    // @HttpCode(210) put http status
-    getCats():catModel[]{
+    async getCats():Promise<catEntity[]>{
     
         // throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-
-        return  this.catService.getCats();
+        return this.catService.getCats();;
     }
 
     @Get('/:id')
-    getCat(@Param('id',ParseIntPipe) id:number):catModel{
+    getCat(@Param('id',ParseIntPipe) id:number):Promise<catEntity>{
+        console.log(id);
         return this.catService.getCat(id);
     }
 
@@ -34,12 +36,12 @@ export class CatController {
 
     @UsePipes(catValidationPipes)
     @Delete('/:id')
-    deletCat(@Param('id') id){
+    deletCat(@Param('id') id:number):Promise<catEntity[]>{
         return this.catService.deleteCat(id);
     }
 
     @Put('/:id')
-    updateCat(@Req() req){
-        return this.catService.updateCat(req.params.id,req.body);
+    updateCat(@Body() catData:catDto,@Param('id') id):Promise<catEntity[]>{
+        return this.catService.updateCat(id,catData);
     }
 }
