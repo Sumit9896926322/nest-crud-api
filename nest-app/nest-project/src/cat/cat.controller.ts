@@ -12,7 +12,7 @@ import catDto from './dto/cat.dto';
 @Controller('')
 // @UseGuards(CatGuard)
 export class CatController {
-    constructor(private catService:CatService){};
+    constructor(private catService:CatService){}
 
     @Get()
     // @SetMetadata('user',['admin']) Not a good approach,use a custome decorator
@@ -20,7 +20,7 @@ export class CatController {
     async getCats():Promise<catEntity[]>{
     
         // throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-        return this.catService.getCats();;
+        return this.catService.getCats();
     }
 
     @Get('/:id')
