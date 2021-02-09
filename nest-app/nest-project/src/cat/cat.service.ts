@@ -1,11 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
+import Cat from './cat.entity';
 import catModel from './cat.model';
 import catDto from './dto/cat.dto';
+import CatRepository from './cat.repository';
+import { InjectRepository } from '@nestjs/typeorm';
 
 
 @Injectable()
 export  class CatService {
+
+   constructor(
+       @InjectRepository(CatRepository)
+       private catRepository:CatRepository
+   ){}
+
    private catList:Array<catModel> = [{id:1,name:'jack',age:12,breed:'labra'},{id:2,name:'doby',age:12,breed:'german shepherd'}];
    private catNum = this.catList.length;
 
