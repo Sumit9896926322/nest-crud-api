@@ -23,7 +23,8 @@ export class UserController {
 
     @Get('/resource')
     @UseGuards(jwtauthguard)
-    resource( @Req() req):string{
+    resource( @Req() req
+    ):string{
         console.log(req);
         return 'Validated User';
     }

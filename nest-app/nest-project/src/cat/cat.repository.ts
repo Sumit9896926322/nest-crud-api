@@ -5,16 +5,19 @@ import catDto from "./dto/cat.dto";
 
 @EntityRepository(catEntity)
 export default class CatRepository extends Repository<catEntity> {
-    async addToDb(cat:catDto):Promise<catEntity>{
+    async addToDb(cat:catDto,user):Promise<catEntity>{
         const catentity  = new catEntity();
         catentity.name = cat.name;
         catentity.age = cat.age;
         catentity.breed = cat.breed;
+        catentity.user = user.name;//user is authorised by passport ans extracted by jwt
        
        const res = await this.save(catentity);
        return res;
    }
    async getCatsFromDb():Promise<catEntity[]>{
+    const query = this.createQueryBuilder('cats');
+   
     let res =await this.find();
     return res;
    }

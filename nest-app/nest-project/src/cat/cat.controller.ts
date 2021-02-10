@@ -8,6 +8,7 @@ import { CatGuard } from './guards/cat.guard';
 import catEntity from './cat.entity';
 import catDto from './dto/cat.dto';
 import { jwtauthguard } from 'src/user/guard/jwtauthguard';
+import { User } from 'src/user/user.decorator';
 
 
 @Controller('')
@@ -18,21 +19,21 @@ export class CatController {
     @Get()
     // @SetMetadata('user',['admin']) Not a good approach,use a custome decorator
    // @HttpCode(210) put http status
-    async getCats():Promise<catEntity[]>{
-    
+    async getCats(@Req() req:Request,@User() user):Promise<catEntity[]>{
+        console.log(user);
         // throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
         return this.catService.getCats();
     }
 
     @Get('/:id')
     getCat(@Param('id',ParseIntPipe) id:number):Promise<catEntity>{
-        console.log(id);
+       
         return this.catService.getCat(id);
     }
 
     @Post('add')
-    addCat(@Body(ValidationPipe) body:catdto){
-        return this.catService.addCat(body);
+    addCat(@Body(ValidationPipe) body:catdto,@User() user){
+        return this.catService.addCat(body,user);
     }
 
     @UsePipes(catValidationPipes)

@@ -5,6 +5,7 @@ import CatRepository from './cat.repository';
 import catDto from './dto/cat.dto';
 import catEntity from './cat.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
 
 
 @Injectable()
@@ -28,8 +29,8 @@ export  class CatService {
         return res;
    }
 
-   async addCat(cat:catDto):Promise<catEntity>{
-       const res = await this.catRepository.addToDb(cat);
+   async addCat(cat:catDto,user):Promise<catEntity>{
+       const res = await this.catRepository.addToDb(cat,user);
        return res;
    }
 
@@ -44,10 +45,10 @@ export  class CatService {
 
 
 
-async updateCat(id:number,cat1:catDto):Promise<catEntity[]>{
+    async updateCat(id:number,cat1:catDto):Promise<catEntity[]>{
     const cats = await this.catRepository.updateCatInDb(id,cat1);
     return cats;
-}
+    }
 
    
 }
