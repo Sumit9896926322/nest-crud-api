@@ -3,6 +3,7 @@ import { UserDto } from "./user.dto";
 import { User } from "./user.entity";
 import * as bcrypt from 'bcrypt'; 
 import { ConflictException, InternalServerErrorException } from "@nestjs/common";
+import { Hash } from "crypto";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User>{
@@ -32,4 +33,10 @@ export class UserRepository extends Repository<User>{
         return hashedPassword;
    }
 
+   async comparePassword(password:string,hashedPassword:string):Promise<boolean>{
+        const res  = await bcrypt.compare(password,hashedPassword);
+        return res;
+   }
+
+   
 }

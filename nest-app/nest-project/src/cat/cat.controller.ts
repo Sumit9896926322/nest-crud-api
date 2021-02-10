@@ -7,10 +7,11 @@ import catValidationPipes from './pipes/cat.validation.pipes';
 import { CatGuard } from './guards/cat.guard';
 import catEntity from './cat.entity';
 import catDto from './dto/cat.dto';
+import { jwtauthguard } from 'src/user/guard/jwtauthguard';
 
 
 @Controller('')
-// @UseGuards(CatGuard)
+@UseGuards(jwtauthguard)
 export class CatController {
     constructor(private catService:CatService){}
 

@@ -1,5 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from 'src/user/user.module';
 import { CatController } from './cat.controller';
 import catEntity from './cat.entity';
 import { catMiddleware } from './cat.middleware';
@@ -9,7 +11,10 @@ import constants from './constants';
 
 
 @Module({
-  imports:[TypeOrmModule.forFeature([CatRepository,catEntity])],
+  imports:[
+  TypeOrmModule.forFeature([CatRepository,catEntity]),
+  UserModule
+   ],
   controllers: [CatController],
   providers: [CatService],
   exports:[CatService]
