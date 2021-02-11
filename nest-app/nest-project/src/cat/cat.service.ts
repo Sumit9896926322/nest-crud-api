@@ -6,6 +6,7 @@ import catDto from './dto/cat.dto';
 import catEntity from './cat.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
+import { UserDto } from 'src/user/user.dto';
 
 
 @Injectable()
@@ -19,8 +20,8 @@ export  class CatService {
     private catList = [];
     private catNum = this.catList.length;
 
-   async getCats():Promise<catEntity[]>{
-    const res = await this.catRepository.getCatsFromDb();
+   async getCats(user:UserDto):Promise<catEntity[]>{
+    const res = await this.catRepository.getCatsFromDb(user);
     return res;
    }
 
@@ -29,24 +30,22 @@ export  class CatService {
         return res;
    }
 
-   async addCat(cat:catDto,user):Promise<catEntity>{
+   async addCat(cat:catDto,user:UserDto):Promise<catEntity>{
        const res = await this.catRepository.addToDb(cat,user);
        return res;
    }
 
 
-   async deleteCat(id:number):Promise<catEntity[]>{
-       console.log(id);
-         const res = await this.getCat(id);
-         await this.catRepository.remove(res);
-         const result =await this.getCats();
+   async deleteCat(id:number,user:UserDto):Promise<catEntity[]>{
+       
+         const result =await this.catRepository.deleteCatFromDb(id,user);
          return result;
     };
 
 
 
-    async updateCat(id:number,cat1:catDto):Promise<catEntity[]>{
-    const cats = await this.catRepository.updateCatInDb(id,cat1);
+    async updateCat(id:number,cat1:catDto,user:UserDto):Promise<catEntity[]>{
+    const cats = await this.catRepository.updateCatInDb(id,cat1,user);
     return cats;
     }
 

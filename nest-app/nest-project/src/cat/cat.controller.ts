@@ -9,6 +9,7 @@ import catEntity from './cat.entity';
 import catDto from './dto/cat.dto';
 import { jwtauthguard } from 'src/user/guard/jwtauthguard';
 import { User } from 'src/user/user.decorator';
+import { UserDto } from 'src/user/user.dto';
 
 
 @Controller('')
@@ -19,10 +20,10 @@ export class CatController {
     @Get()
     // @SetMetadata('user',['admin']) Not a good approach,use a custome decorator
    // @HttpCode(210) put http status
-    async getCats(@Req() req:Request,@User() user):Promise<catEntity[]>{
+    async getCats(@User() user:UserDto):Promise<catEntity[]>{
         console.log(user);
         // throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-        return this.catService.getCats();
+        return this.catService.getCats(user);
     }
 
     @Get('/:id')
@@ -32,18 +33,19 @@ export class CatController {
     }
 
     @Post('add')
-    addCat(@Body(ValidationPipe) body:catdto,@User() user){
+    addCat(@Body(ValidationPipe) body:catdto,@User() user:UserDto){
         return this.catService.addCat(body,user);
     }
 
-    @UsePipes(catValidationPipes)
     @Delete('/:id')
-    deletCat(@Param('id') id:number):Promise<catEntity[]>{
-        return this.catService.deleteCat(id);
+    // @UsePipes(catValidationPipes)//Not working as
+    deletCat(@Param('id',ParseIntPipe) id:number,@User() user:UserDto):Promise<catEntity[]>{
+        
+        return this.catService.deleteCat(id,user);
     }
 
     @Put('/:id')
-    updateCat(@Body() catData:catDto,@Param('id') id):Promise<catEntity[]>{
-        return this.catService.updateCat(id,catData);
+    updateCat(@Body() catData:catDto,@Param('id') id,@User() user:UserDto):Promise<catEntity[]>{
+        return this.catService.updateCat(id,catData,user);
     }
 }

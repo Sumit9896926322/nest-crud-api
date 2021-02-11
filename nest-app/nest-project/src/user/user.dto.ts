@@ -1,6 +1,10 @@
-import { IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class UserDto{
+
+    @IsOptional()
+    id:number;
+
     @IsString()
     @MinLength(4)
     @MaxLength(20)

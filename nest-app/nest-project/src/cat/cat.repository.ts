@@ -1,24 +1,28 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
+import { UserDto } from "src/user/user.dto";
 import { EntityRepository, Repository } from "typeorm";
 import catEntity from "./cat.entity";
 import catDto from "./dto/cat.dto";
 
 @EntityRepository(catEntity)
 export default class CatRepository extends Repository<catEntity> {
-    async addToDb(cat:catDto,user):Promise<catEntity>{
+    async addToDb(cat:catDto,user:UserDto):Promise<catEntity>{
         const catentity  = new catEntity();
         catentity.name = cat.name;
         catentity.age = cat.age;
         catentity.breed = cat.breed;
-        catentity.user = user.name;//user is authorised by passport ans extracted by jwt
+        catentity.username = user.username;//user is authorised by passport ans extracted by jwt
        
        const res = await this.save(catentity);
        return res;
    }
-   async getCatsFromDb():Promise<catEntity[]>{
+
+   async getCatsFromDb(user:UserDto):Promise<catEntity[]>{
     const query = this.createQueryBuilder('cats');
-   
-    let res =await this.find();
+    
+     query.where("cats.username = :username", { username: user.username })
+
+    let res =await query.getMany();
     return res;
    }
 
@@ -29,15 +33,31 @@ export default class CatRepository extends Repository<catEntity> {
     return res;
 }
 
-async updateCatInDb(id:number,cat:catDto):Promise<catEntity[]>{
-    let catToBeChanged =await this.findOne(id);
+async updateCatInDb(id:number,cat:catDto,user:UserDto):Promise<catEntity[]>{
+
+    this.createQueryBuilder('cats')
+    .update('cat_entity')
+    .set({name:cat.name,age:cat.age,breed:cat.breed})
+    .where("username = :username", { username:user.username })
+    .execute();
     
-    catToBeChanged.name = cat.name;
-    catToBeChanged.age = cat.age;
-    catToBeChanged.breed = cat.breed;
-    await this.save(catToBeChanged);
-    const cats = await this.getCatsFromDb();
+    // let catToBeChanged =await this.findOne({user});
+    
+    // catToBeChanged.name = cat.name;
+    // catToBeChanged.age = cat.age;
+    // catToBeChanged.breed = cat.breed;
+    // await this.save(catToBeChanged);
+    const cats = await this.getCatsFromDb(user);//need to fix ,sends userDto from user Controller
     return cats;
 }
-
+ 
+async deleteCatFromDb(id:number,user:UserDto):Promise<catEntity[]>{
+    this.createQueryBuilder()
+    .delete()
+    .from('cat_entity')
+    .where("username = :username", { username:user.username })
+    .execute();
+    const cats = await this.getCatsFromDb(user);//need to fix ,sends userDto from user Controller
+    return cats;
+}
 }

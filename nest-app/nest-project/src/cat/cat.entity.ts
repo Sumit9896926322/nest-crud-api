@@ -19,6 +19,6 @@ export default class catEntity extends BaseEntity {
   user:User
 
   @Column()
-  userId:string;
+  username:string;
 
 }
